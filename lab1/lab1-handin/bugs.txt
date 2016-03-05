@@ -1,0 +1,27 @@
+[zookd.c:65]
+Line No. 65 in zookd.c process_client function has buffer variable "char reqpath[2048]" which can be exploited by giving a request path larger than the capacity of reqpath eg. "GET /" + "a"*2200 +"  HTTP/1.0". This will overflow the reqpath buffer and overwrite the return address and segmentation fault will occur. Canaries can be used to detect this attack.
+    <url_decode(reqpath, sp1)>
+
+[http.c:276]
+Line No. 276 of http_serve function in http.c has variable "char pn[1024]" which can be overflowed and the pointer variable "handler" can be overwritten with any address to take control over the flow of the program with a request such as "Get /" + "a"*1020 + " HTTP/1.0". In this the "handler" variable will be modified without changing the return address so Stack Canaries will fail to detect this overflow attack.
+    <strcat(pn, name)>
+
+[http.c:120]
+Line No. 120 of http_request_headers in http.c has variable "char value[512]" which can be overflowed by giving header along with the request long enough to overwrite the return address and cause segmentation fault. Here Stack canaries will detect the overflow as we have changed the return address.
+Request eg. "GET / HTTP/1.0\r\n" + \
+            "Cookie: " + "a"*550 + "\r\n"  + \
+            "\r\n"
+    <url_decode(value, sp)>    
+
+[http.c:121]
+Line No. 121 of http_request_headers in http.c has variable  "char envvar[512]" which can be overflowed by giving header along with the request long enough to overwrite the return address and cause segmentation fault. Here Stack canaries will detect the overflow as we have changed the return address.
+Request eg. "GET / HTTP/1.0\r\n" + \
+            "Cookie"*1200 +": " + "anything" + "\r\n" + \
+            "\r\n"
+    <sprintf(envvar, "HTTP_%s", buf)>
+
+[http.c:353]
+Line No. 353 of http_serve_directory in http.c has variable "char name[1024]" which can be overflowed by giving a path in the request which appears valid but is long enough to overflow the buffer and overwrite the return address causing segmentation fault. Here Stack canaries will detect the overflow as we have changed the return address.
+REquest eg.  "GET /" + "./"*1000 +". HTTP/1.0\r\n" + \
+             "\r\n"
+    <dir_join(name, pn, indices[i]);>

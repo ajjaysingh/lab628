@@ -1,0 +1,31 @@
+## Place your answers here.
+
+For exploit-2a.py , I used bug-1 listed in bugs.txt which is exploiting buffer reqpath[2048] to overwrite the return address.
+
+
+For exploit-2b.py , I used bug-3 listed in bugs.txt which is exploiting the buffer value[512] to overwrite the return address.
+
+
+For exploit-3,py , I used bug-2 listed in bugs.txt which is exploiting the buffer pn[1024] by injecting the code and specific return address to transfer the control to the injected code.
+
+Other than Bug-2, Bug-1, Bug-3, Bug-4 listed in bugs.txt can be exploited to inject the code and delete the required file.
+In case of bug-4, segmentation fault is occuring with my exploit so we could not use it to delete grades.txt using the mentioned exploit.
+
+
+Exercise-5
+1.  
+If we send a request without "\n" at the end the the and the request has length smaller than the maximum allowed length then the http_read_line function in http.c won't return causing a denial of service attack as the server won't accept any other incoming request.
+eg. 
+ req =   "GET"
+
+ We can prevent this if we create a seperate process to read the request each time we get a new request. This will prevent the Denial of SErvice attack but if someone sends a large number of such request then there will be many processes created and might result in slowdown or crash of server.
+
+
+2.
+Since lab has not been chrooted so anyone can access files from other directories by sending a request like
+ req =   "GET /../../../etc/passwd HTTP/1.0\r\n" + \
+            "\r\n"
+will return the content of the passed file
+This can be prevented by doing a chroot(/home/httpd/lab) in zookld.c(line 170) which will make lab as the root "/.." operation will bounce back to lab only so nobody will be able to access other directories files other than those in lab.
+
+
