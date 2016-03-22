@@ -1,1 +1,1 @@
-In this repo I've added completed code of lab1 and lab2 assignments from the course offered here in IIT Kanpur in fall 2016 titled Computer Security which has been adapted from MIT 628 course on Security. 
+In this repo I've added completed code of lab1 and lab2 assignments from the course offered here in IIT Kanpur in fall 2016 titled Computer Security which has been adapted from MIT 6.858 course on Security. 
